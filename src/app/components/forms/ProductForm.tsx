@@ -1,3 +1,4 @@
+// src/components/ProductForm.tsx
 import React from 'react';
 
 type Product = {
@@ -7,39 +8,32 @@ type Product = {
 };
 
 type ProductFormProps = {
-    product: Product;
-    onSubmit: (product: Product) => void;
+    product: Partial<Product>;
+    onSubmit: (e: React.FormEvent) => void;
     onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-    onCancel: () => void;
 };
 
-const ProductForm: React.FC<ProductFormProps> = ({ product, onSubmit, onChange, onCancel }) => {
-    const handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault();
-        onSubmit(product);
-    };
-
+const ProductForm: React.FC<ProductFormProps> = ({ product, onSubmit, onChange }) => {
     return (
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={onSubmit} className="mb-4">
             <input
                 type="text"
                 name="title"
-                value={product.title}
+                placeholder="Product Title"
+                value={product.title || ''}
                 onChange={onChange}
-                placeholder="Title"
-                required
+                className="border bg-slate-600 p-2 mr-2 rounded"
             />
             <input
                 type="text"
                 name="image"
-                value={product.image}
-                onChange={onChange}
                 placeholder="Image URL"
-                required
+                value={product.image || ''}
+                onChange={onChange}
+                className="border bg-slate-600 p-2 mr-2 rounded"
             />
-            <button type="submit">Save</button>
-            <button type="button" onClick={onCancel}>
-                Cancel
+            <button type="submit" className="border-2 hover:bg-cyan-900 px-4 py-2 rounded">
+                Add Product
             </button>
         </form>
     );
