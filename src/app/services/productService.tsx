@@ -1,5 +1,3 @@
-// productService.ts
-
 import { Product } from '../types/product'; // Assuming you have a types file where Product is defined
 
 export const addProduct = async (newProduct: Partial<Product>): Promise<Product> => {

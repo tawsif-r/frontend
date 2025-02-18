@@ -1,4 +1,3 @@
-// src/components/ProductTable.tsx
 import React from 'react';
 import { Column, Product } from '../../types/product';
 
