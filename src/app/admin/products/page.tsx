@@ -1,12 +1,18 @@
 'use client';
 import React, { useEffect, useState } from 'react';
-import StandardTable, { Column } from '../../components/tables/StandardTable';
 
 type Product = {
     id: number;
     title: string;
     image: string;
 };
+
+type Column<T> = {
+    header: string; // The column header text
+    accessor: keyof T; // The key in the data object that corresponds to this column
+    render?: (row: T) => React.ReactNode; // Optional custom rendering function
+};
+
 
 const ProductsPage: React.FC = () => {
     const [products, setProducts] = useState<Product[]>([]);
@@ -131,7 +137,7 @@ const ProductsPage: React.FC = () => {
                             placeholder="Product Title"
                             value={newProduct.title || ''}
                             onChange={handleInputChange}
-                            className="border bg-slate-600 p-2 mr-2"
+                            className="border bg-slate-600 p-2 mr-2 rounded"
                         />
                         <input
                             type="text"
@@ -139,13 +145,13 @@ const ProductsPage: React.FC = () => {
                             placeholder="Image URL"
                             value={newProduct.image || ''}
                             onChange={handleInputChange}
-                            className="border bg-slate-600 p-2 mr-2"
+                            className="border bg-slate-600 p-2 mr-2 rounded"
                         />
                         <button type="submit" className="border-2 hover:bg-cyan-900 px-4 py-2 rounded">
                             Add Product
                         </button>
                     </form>
-                    <table className="min-w-full border border-gray-300">
+                    <table className="min-w-full border border-gray-300 rounded">
                         <thead className="bg-slate-700">
                             <tr>
                                 {productColumns.map((column, index) => (
@@ -157,14 +163,14 @@ const ProductsPage: React.FC = () => {
                         </thead>
                         <tbody className="divide-y">
                             {products.map((product) => (
-                                <tr key={product.id} className="hover:bg-slate-800">
-                                  <td>{product.id}</td>
+                                <tr key={product.id} className="hover:bg-slate-800 rounded">
+                                    <td>{product.id}</td>
                                     {editingProduct?.id === product.id ? (
-                                        <>  
-                                            
+                                        <>
+
                                             <td>
                                                 <input
-                                                    className='border bg-slate-600 p-2 mr-2'
+                                                    className='border bg-slate-600 p-2 mr-2 rounded'
                                                     type="text"
                                                     value={editingProduct.title}
                                                     onChange={(e) =>
@@ -174,7 +180,7 @@ const ProductsPage: React.FC = () => {
                                             </td>
                                             <td>
                                                 <input
-                                                    className='border bg-slate-600 p-2 mr-2'
+                                                    className='border bg-slate-600 p-2 mr-2 rounded'
                                                     type="text"
                                                     value={editingProduct.image}
                                                     onChange={(e) =>
@@ -183,7 +189,7 @@ const ProductsPage: React.FC = () => {
                                                 />
                                             </td>
                                             <td>
-                                                <button className="bg-slate-700" onClick={() => {
+                                                <button className="m-4 p-2 border-2 hover:bg-slate-400 rounded" onClick={() => {
                                                     console.log('Save button clicked');
                                                     console.log('Current editingProduct:', editingProduct);
                                                     if (!editingProduct) {
@@ -192,7 +198,7 @@ const ProductsPage: React.FC = () => {
                                                     }
                                                     updateProduct(editingProduct);
                                                 }}>Save</button>
-                                                <button className="bg-lime-400" onClick={() => setEditingProduct(null)}>Cancel</button>
+                                                <button className="m-4 p-2 border-2 hover:bg-slate-400 rounded" onClick={() => setEditingProduct(null)}>Cancel</button>
                                             </td>
                                         </>
                                     ) : (
@@ -202,11 +208,11 @@ const ProductsPage: React.FC = () => {
                                                 <img src={product.image} alt={product.title} className="w-16 h-16 object-cover" />
                                             </td>
                                             <td>
-                                                <button className='bg-cyan-900 px-3 py-2' onClick={() => {
+                                                <button className='border-2 px-3 py-2 rounded' onClick={() => {
                                                     console.log('setting editing product: ', product);
                                                     setEditingProduct(product);
                                                 }}>Edit</button>
-                                                <button className='mx-5 bg-red-900 px-3 py-2' onClick={() => deleteProduct(product.id)}>Delete</button>
+                                                <button className='mx-5 bg-red-900 px-3 py-2 rounded' onClick={() => deleteProduct(product.id)}>Delete</button>
                                             </td>
                                         </>
                                     )}
