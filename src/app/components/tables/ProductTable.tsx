@@ -1,5 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Column, Product } from '../../types/product';
+import Link from 'next/link';
+import Card from "@/app/components/ui/card";
 
 type ProductTableProps = {
     products: Product[];
@@ -18,9 +20,10 @@ const ProductTable: React.FC<ProductTableProps> = ({
     handleUpdateProduct,
     handleDeleteProduct,
 }) => {
+    
     return (
-        <table className="min-w-full border border-gray-300 rounded">
-            <thead className="bg-slate-700">
+        <table className="min-w-full rounded-xl">
+            <thead className="bg-slate-700 rounded-xl">
                 <tr>
                     {columns.map((column, index) => (
                         <th key={index} className="px-4 py-2 text-left font-semibold uppercase text-sm border-b">
@@ -32,7 +35,9 @@ const ProductTable: React.FC<ProductTableProps> = ({
             <tbody className="divide-y">
                 {products.map((product) => (
                     <tr key={product.id} className="hover:bg-slate-800 rounded">
+
                         <td>{product.id}</td>
+                        
                         {editingProduct?.id === product.id ? (
                             <>
                                 <td>
@@ -80,9 +85,11 @@ const ProductTable: React.FC<ProductTableProps> = ({
                         ) : (
                             <>
                                 <td>{product.title}</td>
-                                <td>
+                                
+                                <td>{product.image}</td>
+                                {/* <td>
                                     <img src={product.image} alt={product.title} className="w-16 h-16 object-cover" />
-                                </td>
+                                </td> */}
                                 <td>
                                     <button
                                         className="border-2 px-3 py-2 rounded hover:bg-cyan-800"
@@ -99,14 +106,26 @@ const ProductTable: React.FC<ProductTableProps> = ({
                                     >
                                         Delete
                                     </button>
+                                    <button
+                                        className="mx-5 border-2 hover:bg-violet-950 px-3 py-2 rounded"
+                                        
+                                    ><Link href={`products/${product.id}`}>View</Link>
+
+                                    </button>
+                                    
                                 </td>
                             </>
                         )}
+
                     </tr>
+
                 ))}
             </tbody>
         </table>
+    
+        
     );
 };
+
 
 export default ProductTable;

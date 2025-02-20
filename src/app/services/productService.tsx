@@ -16,6 +16,39 @@ export const addProduct = async (newProduct: Partial<Product>): Promise<Product>
 };
 
 
+export const getProduct = async (id: number): Promise<Product> => {
+    try {
+        const response = await fetch(`http://localhost:8000/api/products/${id}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data: Product = await response.json();
+        return data;
+    } catch (error) {
+        if (error instanceof Error) {
+            throw new Error(`Failed to fetch product: ${error.message}`);
+        } else {
+            throw new Error('An unexpected error occurred while fetching the product.');
+        }
+    }
+};
+
+// export const updateProduct = async (payload: { id: number; updatedData: Partial<Product> }): Promise<Product> => {
+//     const response = await fetch(`/api/products/${payload.id}`, {
+//         method: "PUT",
+//         headers: { "Content-Type": "application/json" },
+//         body: JSON.stringify(payload.updatedData),
+//     });
+//     if (!response.ok) throw new Error("Failed to update product");
+//     return response.json();
+// };
 
 
 // Function to update a product

@@ -4,6 +4,11 @@ export type Product = {
     image: string;
 };
 
+export type Id = {
+    id: number;
+};
+
+
 export type Column<T> = {
     header: string; // The column header text
     accessor: keyof T; // The key in the data object that corresponds to this column

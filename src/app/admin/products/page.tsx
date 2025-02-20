@@ -1,4 +1,3 @@
-// src/pages/products.tsx
 'use client';
 import React, { useEffect, useState } from 'react';
 import { Product, Column } from '../../types/product';
