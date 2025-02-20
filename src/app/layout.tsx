@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Navbar from "./components/ui/navbar";
 
+
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -26,7 +27,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} font-mono antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} font-mono antialiased flex-1 p-8 min-h-screen transition-all duration-300 ml-8`}
       >
         <Navbar/>
         {children}
@@ -34,3 +35,16 @@ export default function RootLayout({
     </html>
   );
 }
+
+
+
+// const Layout: React.FC = ({ children }) => {
+//     return (
+//         <div className="flex">
+//             <Sidebar />
+//             <main className="flex-1 p-8 bg-gray-100 min-h-screen transition-all duration-300" style={{ marginLeft: '4rem' }}>
+//                 {children}
+//             </main>
+//         </div>
+//     );
+// };

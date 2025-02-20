@@ -40,16 +40,6 @@ export const getProduct = async (id: number): Promise<Product> => {
     }
 };
 
-// export const updateProduct = async (payload: { id: number; updatedData: Partial<Product> }): Promise<Product> => {
-//     const response = await fetch(`/api/products/${payload.id}`, {
-//         method: "PUT",
-//         headers: { "Content-Type": "application/json" },
-//         body: JSON.stringify(payload.updatedData),
-//     });
-//     if (!response.ok) throw new Error("Failed to update product");
-//     return response.json();
-// };
-
 
 // Function to update a product
 export const updateProduct = async (updatedProduct: Product): Promise<Product> => {
