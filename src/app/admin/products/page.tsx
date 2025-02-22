@@ -1,6 +1,6 @@
 'use client';
 import React, { useEffect, useState } from 'react';
-import { Product, Column } from '../../types/product';
+import { Product, Column } from '../../types/types';
 import { addProduct, updateProduct, deleteProduct } from '@/app/services/productService';
 import ProductForm from '../../components/forms/ProductForm';
 import ProductTable from '../../components/tables/ProductTable';

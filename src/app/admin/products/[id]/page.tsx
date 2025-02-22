@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
-import { Product } from '../../../types/product';
+import { Product } from '../../../types/types';
 import { getProduct } from '@/app/services/productService';
 
 export default function ProductDetail() {

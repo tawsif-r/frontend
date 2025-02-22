@@ -3,7 +3,15 @@ export type Product = {
     title: string;
     image: string;
 };
-
+export type Feature = {
+    id: number;
+    name: string,
+    description: string,
+    price: number,
+    created_at: Date,
+    updated_at: Date,
+    is_active: boolean
+};
 export type Id = {
     id: number;
 };
