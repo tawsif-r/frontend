@@ -21,13 +21,13 @@ const ProductTable: React.FC<ProductTableProps> = ({
 }) => {
     return (
         <div className="overflow-x-auto bg-gray-900 rounded-xl shadow-lg">
-            <table className="min-w-full">
+            <table className="min-w-full ">
                 <thead className="bg-gray-800">
                     <tr>
                         {columns.map((column, index) => (
                             <th
                                 key={index}
-                                className="px-6 py-4 text-left text-sm font-semibold text-gray-300 uppercase tracking-wider border-b border-gray-700"
+                                className="px-6 py-4 text-left text-sm font-semibold bg-slate-950 uppercase tracking-wider border-b border-gray-700"
                             >
                                 {column.header}
                             </th>

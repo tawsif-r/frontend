@@ -20,17 +20,17 @@ const FeatureTable: React.FC<FeatureTableProps> = ({
     handleDeleteFeature,
 }) => {
     return (
-        <div className="overflow-x-auto">
-            <table className="min-w-full bg-gray-800 text-white rounded-lg">
+        <div className="overflow-x-auto rounded-xl shadow-lg">
+            <table className="min-w-full">
                 {/* Table Header */}
                 <thead>
                     <tr>
                         {columns.map((column, index) => (
-                            <th key={index} className="px-6 py-3 text-left font-medium uppercase tracking-wider">
+                            <th key={index} className="px-6 py-3 bg-slate-950 text-left font-medium uppercase tracking-wider">
                                 {column.header}
                             </th>
                         ))}
-                        <th className="px-6 py-3 text-left font-medium uppercase tracking-wider rounded-lg">Actions</th>
+                        <th className="px-6 py-3 text-left font-medium uppercase tracking-wider bg-slate-950 ">Actions</th>
                     </tr>
                 </thead>
 

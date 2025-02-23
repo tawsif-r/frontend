@@ -10,7 +10,7 @@ const Navbar: React.FC = () => {
 
     return (
         <aside
-            className={`fixed top-0 left-0 h-screen bg-gray-900 shadow-lg z-50 transition-all duration-300 ease-in-out ${isVisible ? 'w-64' : 'w-16'
+            className={`fixed top-0 left-0 h-screen bg-gray-950 bg-transparent-6 shadow-lg z-50 transition-all duration-300 ease-in-out ${isVisible ? 'w-64' : 'w-16'
                 }`}
             onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}
