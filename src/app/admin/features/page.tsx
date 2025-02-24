@@ -1,14 +1,14 @@
 'use client';
 import React, { useEffect, useState } from 'react';
 import { Feature, Column } from '../../types/types';
-import { addFeature, updateFeature, deleteFeature } from '@/app/services/featureService';
+import { addData, updateData, deleteData, fetchData} from '@/app/services/apiService';
 import FeatureForm from '../../components/forms/FeatureForm';
 import FeatureTable from '../../components/tables/FeatureTable';
 
 const featuresPage: React.FC = () => {
     const [features, setFeatures] = useState<Feature[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
-    const [error, setError] = useState<string | null>(null);
+    const [error, setError] = useState<string>("");
     const [newFeature, setNewFeature] = useState<Partial<Feature>>({
         name: '',
         description: '',
@@ -22,19 +22,8 @@ const featuresPage: React.FC = () => {
 
     // Fetch features
     useEffect(() => {
-        const fetchfeatures = async () => {
-            try {
-                const response = await fetch('http://localhost:8000/api/features');
-                if (!response.ok) throw new Error('Failed to fetch features');
-                const data = await response.json();
-                setFeatures(data);
-            } catch (err: any) {
-                setError(err.message);
-            } finally {
-                setLoading(false);
-            }
-        };
-        fetchfeatures();
+        
+        fetchData('http://localhost:8000/api/features',setFeatures,setError,setLoading);
     }, []);
 
     // Handle input change
@@ -48,7 +37,7 @@ const featuresPage: React.FC = () => {
     
         try {
             // Add the new feature using the `addFeature` function
-            const addedFeature = await addFeature(newFeature);
+            const addedFeature = await addData('http://localhost:8000/api/features',newFeature);
     
             // Update the features list with the newly added feature
             setFeatures((prevFeatures) => [...prevFeatures, addedFeature]);
@@ -74,7 +63,7 @@ const featuresPage: React.FC = () => {
     // Handle update Feature
     const handleUpdateFeature = async (updatedFeature: Feature) => {
         try {
-            const updatedData = await updateFeature(updatedFeature);
+            const updatedData = await updateData(`http://localhost:8000/api/features/${updatedFeature.id}`,updatedFeature);
             setFeatures((prev) => prev.map((p) => (p.id === updatedData.id ? updatedData : p)));
             setEditingFeature(null);
         } catch (err: any) {
@@ -85,7 +74,7 @@ const featuresPage: React.FC = () => {
     // Handle delete Feature
     const handleDeleteFeature = async (id: number) => {
         try {
-            await deleteFeature(id);
+            await deleteData(`http://localhost:8000/api/features/${id}`,id);
             setFeatures((prev) => prev.filter((p) => p.id !== id));
         } catch (err: any) {
             setError(err.message);
@@ -100,24 +89,6 @@ const featuresPage: React.FC = () => {
         { header: "Created At", accessor:"created_at"},
         { header: "Updated At", accessor:"updated_at"},
         { header: "Active", accessor: "is_active"},
-        // {
-        //     header: "Actions",
-        //     accessor: "id",
-        //     render: (Feature) => (
-        //         <>
-        //             <button
-        //                 onClick={() => setEditingFeature(Feature)}
-        //             >
-        //                 Edit
-        //             </button>
-        //             <button
-        //                 onClick={() => handleDeleteFeature(Feature.id)}
-        //             >
-        //                 Delete
-        //             </button>
-        //         </>
-        //     ),
-        // },
     ];
 
     return (

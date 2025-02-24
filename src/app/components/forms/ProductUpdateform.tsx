@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Product } from '@/app/types/types';
-import { updateProduct } from '../../services/productService';
+import { updateProduct } from '../../services/apiService';
 
 interface UpdateProductFormProps {
     initialProduct: Product;

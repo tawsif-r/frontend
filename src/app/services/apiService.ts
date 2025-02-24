@@ -1,13 +1,16 @@
 import { Product } from '../types/types'; // Assuming you have a types file where Product is defined
+import { SetStateAction, Dispatch } from 'react';
 
-export const addProduct = async (newProduct: Partial<Product>): Promise<Product> => {
+export const addData= async <T>(
+    api:string,
+    newProduct: Partial<T>): Promise<T> => {
     try {
-        const response = await fetch('http://localhost:8000/api/products', {
+        const response = await fetch(api, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(newProduct),
         });
-        if (!response.ok) throw new Error('Failed to add product');
+        if (!response.ok) throw new Error('Failed to add data');
         const addedProduct = await response.json();
         return addedProduct;
     } catch (err: any) {
@@ -16,9 +19,30 @@ export const addProduct = async (newProduct: Partial<Product>): Promise<Product>
 };
 
 
-export const getProduct = async (id: number): Promise<Product> => {
+export const fetchData = async <T>(
+    api: string,
+    setData: Dispatch<SetStateAction<T>>, // Generic type for setting data
+    setError: Dispatch<SetStateAction<string>>, // Correct type for setting error
+    setLoading: Dispatch<SetStateAction<boolean>> // Correct type for setting loading
+  ) => {
     try {
-        const response = await fetch(`http://localhost:8000/api/products/${id}`, {
+      setLoading(true); // Start loading
+      const response = await fetch(api);
+      if (!response.ok) throw new Error('Failed to fetch data');
+      const data = await response.json();
+      setData(data); // Set the fetched data
+    } catch (err: any) {
+      setError(err.message); // Set the error message
+    } finally {
+      setLoading(false); // Stop loading regardless of success or failure
+    }
+  };
+
+export const getData = async <T>(
+    api: string,
+    id: number): Promise<T> => {
+    try {
+        const response = await fetch(api, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json'
@@ -29,7 +53,7 @@ export const getProduct = async (id: number): Promise<Product> => {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
 
-        const data: Product = await response.json();
+        const data = await response.json();
         return data;
     } catch (error) {
         if (error instanceof Error) {
@@ -42,9 +66,11 @@ export const getProduct = async (id: number): Promise<Product> => {
 
 
 // Function to update a product
-export const updateProduct = async (updatedProduct: Product): Promise<Product> => {
+export const updateData = async <T>(
+    api:string,
+    updatedProduct: T): Promise<T> => {
     try {
-        const response = await fetch(`http://localhost:8000/api/products/${updatedProduct.id}`, {
+        const response = await fetch(api, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(updatedProduct),
@@ -64,9 +90,11 @@ export const updateProduct = async (updatedProduct: Product): Promise<Product> =
 
 
 // Function to delete a product
-export const deleteProduct = async (id: number): Promise<void> => {
+export const deleteData = async (
+    api:string,
+    id: number): Promise<void> => {
     try {
-        const response = await fetch(`http://localhost:8000/api/products/${id}`, {
+        const response = await fetch(api, {
             method: 'DELETE',
         });
 
