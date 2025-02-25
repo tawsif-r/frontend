@@ -4,7 +4,12 @@ import Table from '@/app/components/tables/GenTable';
 import { Column } from '@/app/components/tables/GenTable';
 import { addData, deleteData, fetchData, updateData } from '@/app/services/apiService';
 import { Product } from '@/app/types/types';
+import Form from '@/app/components/forms/GenForm';
+import {FormField} from '@/app/components/forms/GenForm'
+import Modal from '@/app/components/ui/Modal';
 
+
+//==================================table==============================
 const productColumns: Column<Product>[] = [
   { header: 'ID', accessor: 'id' },
   {
@@ -36,12 +41,24 @@ const productColumns: Column<Product>[] = [
       ),
   },
 ];
+//===========================X==============================
+
+
+
+
+//===========================form=======================
+const productFields: FormField<Product>[] = [
+  { label: 'Title', name: 'title', type: 'text' },
+  { label: 'Image', name: 'image', type: 'text' },
+]
+//=============================X=========================
 
 const ProductTable = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>("");
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     fetchData<Product[]>(
@@ -52,7 +69,16 @@ const ProductTable = () => {
     );
   }, []);
 
-  const handleAdd = async (newRow: Product) => {
+  const handleSuccess = (newProduct: Product) => {
+    setProducts((prev) => [...prev, newProduct]);
+    setIsModalOpen(false); // Close the modal after successful submission
+  };
+  
+  const handleError = (errorMessage: string) => {
+    setError(errorMessage);
+  };
+
+  const handleAddProduct = async (newRow: Product) => {
     try {
       const addedProduct = await addData('http://localhost:8000/api/products', newRow);
       setProducts([...products, addedProduct]);
@@ -87,13 +113,44 @@ const ProductTable = () => {
 
   return (
     <div>
-      <h1>Admin Dashboard</h1>
+      <div className="flex items-center mb-6">
+        <h1 className="text-2xl font-bold m-3">Admin Dashboard</h1>
+        <button
+          onClick={() => setIsModalOpen(true)}
+          className="bg-blue-600 hover:bg-blue-700 font-medium py-2 px-4 rounded-lg transition-colors duration-200 flex items-center gap-2"
+        >
+          <svg 
+            className="w-5 h-5" 
+            fill="none" 
+            stroke="currentColor" 
+            viewBox="0 0 24 24"
+          >
+            <path 
+              strokeLinecap="round" 
+              strokeLinejoin="round" 
+              strokeWidth={2} 
+              d="M12 4v16m8-8H4" 
+            />
+          </svg>
+          Create New
+        </button>
+      </div>
+
+      <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
+        <h2 className="text-xl font-semibold mb-4">Add Product</h2>
+        <Form<Product>
+          api="http://localhost:8000/api/products"
+          fields={productFields}
+          onSuccess={handleSuccess}
+          onError={handleError}
+        />
+      </Modal>
       {loading && <p>Loading...</p>}
       {error && <p style={{ color: 'red' }}>Error: {error}</p>}
       <Table
         data={products}
         columns={productColumns}
-        onAdd={handleAdd}
+        onAdd={handleAddProduct}
         onUpdate={handleUpdateProduct}
         onDelete={handleDeleteProduct}
         editingData={editingProduct}
