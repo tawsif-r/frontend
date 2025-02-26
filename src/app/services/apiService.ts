@@ -4,6 +4,7 @@ import { SetStateAction, Dispatch } from 'react';
 export const addData= async <T>(
     api:string,
     newProduct: Partial<T>): Promise<T> => {
+    console.log('POST Request Payload:', JSON.stringify(newProduct, null, 2));
     try {
         const response = await fetch(api, {
             method: 'POST',
@@ -17,6 +18,8 @@ export const addData= async <T>(
         throw new Error(err.message);
     }
 };
+
+
 
 
 export const fetchData = async <T>(
@@ -75,12 +78,13 @@ export const updateData = async <T>(
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(updatedProduct),
         });
-
+        console.log(response);
         if (!response.ok) {
             throw new Error('Failed to update product');
         }
 
         const updatedData = await response.json();
+        console.log(updatedData)
         return updatedData; // Return the updated product data
     } catch (err: any) {
         throw new Error(err.message); // Rethrow the error for handling in the component

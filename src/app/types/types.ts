@@ -1,8 +1,13 @@
-export type Product = {
+export interface Product {
     id: number;
     title: string;
     image: string;
-};
+    likes: number;
+    description: string | null;
+    price: number;
+    features: Feature[];
+    feature_ids: number[];
+  }
 export type Feature = {
     id: number;
     name: string,

@@ -32,47 +32,15 @@ const Table = <T extends { id: number }>({
   const [newRow, setNewRow] = useState<Partial<T>>({});
   const [editRow, setEditRow] = useState<T | null>(null);
 
-  // const handleAdd = () => {
-  //   if (Object.keys(newRow).length > 0) {
-  //     onAdd({ ...newRow, id: Date.now() } as T);
-  //     setNewRow({});
-  //   }
-  // };
-
   const handleSave = () => {
     if (editRow) {
+      console.log(editRow)
       handleUpdateData(editRow);
     }
   };
 
   return (
     <div className="ml-2 overflow-x-auto rounded-xl shadow-xl">
-      {/* <div className="p-4 bg-slate-950">
-        <div className="flex gap-2 flex-wrap">
-          {columns.map((column) => (
-            <input
-              key={String(column.accessor)}
-              className="px-2 py-1 bg-slate-800 text-white rounded"
-              type="text"
-              placeholder={`Enter ${column.header}`}
-              value={(newRow[column.accessor] as string) || ""}
-              onChange={(e) =>
-                setNewRow((prev) => ({
-                  ...prev,
-                  [column.accessor]: e.target.value,
-                }))
-              }
-            />
-          ))}
-          <button
-            className="px-4 py-1 bg-blue-600 text-white rounded hover:bg-blue-700"
-            onClick={handleAdd}
-          >
-            Add
-          </button>
-        </div>
-      </div> */}
-
       <table className="min-w-full">
         <thead>
           <tr>
@@ -116,8 +84,8 @@ const Table = <T extends { id: number }>({
                       className="mr-2 px-2 py-1"
                       onClick={handleSave}
                     >
-                      <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" className="size-6 hover:scale-150 transition-all duration-300">
-                        <path strokeLinecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+                      <svg fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="size-6 hover:scale-150 transition-all duration-300">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" />
                       </svg>
 
                     </button>

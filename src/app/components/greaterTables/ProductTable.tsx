@@ -1,13 +1,12 @@
-'use client'
+'use client';
 import React, { useEffect, useState } from 'react';
 import Table from '@/app/components/tables/GenTable';
 import { Column } from '@/app/components/tables/GenTable';
 import { addData, deleteData, fetchData, updateData } from '@/app/services/apiService';
 import { Product } from '@/app/types/types';
 import Form from '@/app/components/forms/GenForm';
-import {FormField} from '@/app/components/forms/GenForm'
+import { FormField } from '@/app/components/forms/GenForm';
 import Modal from '@/app/components/ui/Modal';
-
 
 //==================================table==============================
 const productColumns: Column<Product>[] = [
@@ -37,26 +36,69 @@ const productColumns: Column<Product>[] = [
           className="w-full bg-slate-800 text-white p-1 rounded"
         />
       ) : (
-        <img src={value as string} alt="Product" style={{ maxWidth: '50px' }} />
+        // <img src={value as string} alt="Product" style={{ maxWidth: '50px' }} />
+        String(value)
       ),
+  },
+  {
+    header: 'Description',
+    accessor: 'description',
+    render: (value, row, updateRow) =>
+      updateRow ? (
+        <input
+          value={(value as string) || ''} // Handle null value
+          onChange={(e) => updateRow({ ...row, description: e.target.value })}
+          className="w-full bg-slate-800 text-white p-1 rounded"
+        />
+      ) : (
+        String(value || 'No description')
+      ),
+  },
+  {
+    header: 'Price',
+    accessor: 'price',
+    render: (value) => <span>${(value as number)}</span>,
+  },
+  {
+    header: 'Features',
+    accessor: 'feature_ids', // Use feature_ids to match the request payload
+    render: (value, row, updateRow) => {
+      const features = row.features as { id: number; name: string }[] | undefined; // Display purposes
+      const featureIds = value as number[] | undefined; // Editable field
+  
+      return updateRow ? (
+        <select
+          multiple
+          value={featureIds?.map((id) => id.toString()) || []} // Convert IDs to strings for <select>
+          onChange={(e) => {
+            const selectedIds = Array.from(e.target.selectedOptions, (option) =>
+              parseInt(option.value)
+            );
+            updateRow({ ...row, feature_ids: selectedIds }); // Update feature_ids with selected values
+          }}
+          className="w-full bg-slate-800 text-white p-1 rounded"
+        >
+          {features?.map((feature) => (
+            <option key={feature.id} value={feature.id.toString()}>
+              {feature.name}
+            </option>
+          ))}
+        </select>
+      ) : (
+        features
+          ? features.map((f) => f.name).join(', ')
+          : 'No features'
+      );
+    },
   },
 ];
 //===========================X==============================
 
-
-
-
-//===========================form=======================
-const productFields: FormField<Product>[] = [
-  { label: 'Title', name: 'title', type: 'text' },
-  { label: 'Image', name: 'image', type: 'text' },
-]
-//=============================X=========================
-
 const ProductTable = () => {
   const [products, setProducts] = useState<Product[]>([]);
+  const [features, setFeatures] = useState<{ id: number; name: string }[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string>("");
+  const [error, setError] = useState<string>('');
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -67,13 +109,36 @@ const ProductTable = () => {
       setError,
       setLoading
     );
+    fetchData<{ id: number; name: string }[]>(
+      'http://localhost:8000/api/features',
+      setFeatures,
+      setError,
+      () => {}
+    );
+    
   }, []);
+
+  const productFields: FormField<Product>[] = [
+    { label: 'Title', name: 'title', type: 'text' },
+    { label: 'Image', name: 'image', type: 'text' },
+    { label: 'Description', name: 'description', type: 'text' },
+    {
+      label: 'Features',
+      name: 'feature_ids', // This will be transformed to feature_ids in handleSubmit
+      type: 'select',
+      options: features.map((feature) => ({
+        value: feature.id.toString(),
+        label: feature.name,
+      })),
+      multiple: true,
+    },
+  ];
 
   const handleSuccess = (newProduct: Product) => {
     setProducts((prev) => [...prev, newProduct]);
-    setIsModalOpen(false); // Close the modal after successful submission
+    setIsModalOpen(false);
   };
-  
+
   const handleError = (errorMessage: string) => {
     setError(errorMessage);
   };
@@ -89,10 +154,12 @@ const ProductTable = () => {
 
   const handleUpdateProduct = async (updatedProduct: Product) => {
     try {
+      console.log("the data is jp")
       const updatedData = await updateData(
         `http://localhost:8000/api/products/${updatedProduct.id}`,
         updatedProduct
       );
+      console.log(updatedProduct)
       setProducts((prev) =>
         prev.map((p) => (p.id === updatedData.id ? updatedData : p))
       );
@@ -119,20 +186,19 @@ const ProductTable = () => {
           onClick={() => setIsModalOpen(true)}
           className="bg-sky-800 hover:bg-indigo-900 shadow-xl font-medium py-2 px-4 rounded-lg transition-colors duration-200 hover:shadow-indigo-500 hover:shadow-lg hover:scale-105 flex items-center gap-2"
         >
-          <svg 
-            className="w-5 h-5" 
-            fill="none" 
-            stroke="currentColor" 
+          <svg
+            className="w-5 h-5"
+            fill="none"
+            stroke="currentColor"
             viewBox="0 0 24 24"
           >
-            <path 
-              strokeLinecap="round" 
-              strokeLinejoin="round" 
-              strokeWidth={2} 
-              d="M12 4v16m8-8H4" 
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M12 4v16m8-8H4"
             />
           </svg>
-          
         </button>
       </div>
 
@@ -154,10 +220,13 @@ const ProductTable = () => {
         onUpdate={handleUpdateProduct}
         onDelete={handleDeleteProduct}
         editingData={editingProduct}
-        setEditingData={setEditingProduct}
+        setEditingData={(product) => {
+          console.log('Editing product:', product); // Log when editing starts
+          setEditingProduct(product);
+        }}
         handleUpdateData={handleUpdateProduct}
         handleDeleteData={handleDeleteProduct}
-      />  
+      />
     </div>
   );
 };
