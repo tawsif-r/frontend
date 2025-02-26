@@ -117,7 +117,7 @@ const Table = <T extends { id: number }>({
                       onClick={handleSave}
                     >
                       <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" className="size-6 hover:scale-150 transition-all duration-300">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+                        <path strokeLinecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
                       </svg>
 
                     </button>
