@@ -1,4 +1,4 @@
-'use client'
+'use client';
 import React, { useEffect, useState } from 'react';
 import Table from '@/app/components/tables/GenTable';
 import { Column } from '@/app/components/tables/GenTable';
@@ -8,72 +8,72 @@ import Modal from '@/app/components/ui/Modal';
 import Form from '@/app/components/forms/GenForm';
 import { FormField } from '@/app/components/forms/GenForm';
 
-
 //=======================================Columns====================================================
 const FeatureColumns: Column<Feature>[] = [
   { header: 'ID', accessor: 'id' },
-  { header: 'Name',accessor: 'name',
-    render:(value,row,updateRow)=>updateRow?(
-    <input 
-    value={value as string} 
-    onChange={(e) => updateRow(
-      {...row, name:e.target.value}
-    )} 
-    className="w-full bg-slate-800 text-white p-1 rounded"/>
-  ):(
-    String(value)
-  )},
-  { header: 'Description', accessor: 'description',
-    render: (value,row,updateRow)=>updateRow?(
-
-      <input 
-      value={value as string}
-      onChange = {(e)=> updateRow(
-        {...row, description:e.target.value}
-      )}
-      className="w-full bg-slate-800 text-white p-1 rounded"
-      />
-    ):(
-      String(value)
-    )
+  {
+    header: 'Name',
+    accessor: 'name',
+    render: (value, row, updateRow) =>
+      updateRow ? (
+        <input
+          value={value as string}
+          onChange={(e) => updateRow({ name: e.target.value })} // Only update name
+          className="w-full bg-slate-800 text-white p-1 rounded"
+        />
+      ) : (
+        String(value)
+      ),
   },
-  { header: 'Price', accessor:'price',
-    render:(value, row, updateRow)=>updateRow?(
-      <input
-      type='number'
-      value={value as number}
-      onChange={(e)=>updateRow(
-        {...row, price:parseFloat(e.target.value)}
-      )}
-      className="w-full bg-slate-800 text-white p-1 rounded"
-       />
-    ):(
-      <span>${Number(value).toFixed(2)}</span>
-    )
+  {
+    header: 'Description',
+    accessor: 'description',
+    render: (value, row, updateRow) =>
+      updateRow ? (
+        <input
+          value={value as string}
+          onChange={(e) => updateRow({ description: e.target.value })} // Only update description
+          className="w-full bg-slate-800 text-white p-1 rounded"
+        />
+      ) : (
+        String(value)
+      ),
   },
-  { header: 'Created at', accessor:'created_at'},
-  { header: 'Updated at', accessor: 'updated_at'},
-  { header: 'Active', accessor: 'is_active', render:(value,row,updateRow)=>(updateRow?(
-    <input
-      type="checkbox"
-      checked={value as boolean}
-      onChange={(e) => {
-        const updatedRow = { ...row, is_active: e.target.checked };
-        updateRow(updatedRow);
-      }}
-      className="h-4 w-4 text-cyan-600 bg-gray-700 border-gray-600 rounded 
-                 focus:ring-cyan-500 focus:ring-2"
-    />
-  ) : (
-    <span>{value ? 'Yes' : 'No'}</span> // Display text when not editable
-  ))}
+  {
+    header: 'Price',
+    accessor: 'price',
+    render: (value, row, updateRow) =>
+      updateRow ? (
+        <input
+          type="number"
+          value={value as number}
+          onChange={(e) => updateRow({ price: parseFloat(e.target.value) })} // Only update price
+          className="w-full bg-slate-800 text-white p-1 rounded"
+        />
+      ) : (
+        <span>${Number(value).toFixed(2)}</span>
+      ),
+  },
+  { header: 'Created at', accessor: 'created_at' },
+  { header: 'Updated at', accessor: 'updated_at' },
+  {
+    header: 'Active',
+    accessor: 'is_active',
+    render: (value, row, updateRow) =>
+      updateRow ? (
+        <input
+          type="checkbox"
+          checked={value as boolean}
+          onChange={(e) => updateRow({ is_active: e.target.checked })} // Only update is_active
+          className="h-4 w-4 text-cyan-600 bg-gray-700 border-gray-600 rounded focus:ring-cyan-500 focus:ring-2"
+        />
+      ) : (
+        <span>{value ? 'Yes' : 'No'}</span> // Display text when not editable
+      ),
+  },
 ];
 
-
-
-
-
-//===========================form fields=======================
+//===========================Form Fields=======================
 const FeatureFields: FormField<Feature>[] = [
   { label: 'Name', name: 'name', type: 'text' },
   { label: 'Description', name: 'description', type: 'text' },
@@ -81,13 +81,13 @@ const FeatureFields: FormField<Feature>[] = [
   { label: 'Created At', name: 'created_at', type: 'date' },
   { label: 'Updated At', name: 'updated_at', type: 'date' },
   { label: 'Active', name: 'is_active', type: 'checkbox' },
-]
+];
 
 //============================Page=============================
 const FeatureTable = () => {
   const [features, setFeatures] = useState<Feature[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string>("");
+  const [error, setError] = useState<string>('');
   const [editingFeature, setEditingFeature] = useState<Feature | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -99,14 +99,15 @@ const FeatureTable = () => {
       setLoading
     );
   }, []);
+
   const handleSuccess = (newFeature: Feature) => {
     setFeatures((prev) => [...prev, newFeature]);
-      setIsModalOpen(false); // Close the modal after successful submission
-    };
-    
-    const handleError = (errorMessage: string) => {
-      setError(errorMessage);
-    };
+    setIsModalOpen(false); // Close the modal after successful submission
+  };
+
+  const handleError = (errorMessage: string) => {
+    setError(errorMessage);
+  };
 
   const handleAddFeature = async (newRow: Feature) => {
     try {
@@ -149,17 +150,17 @@ const FeatureTable = () => {
           onClick={() => setIsModalOpen(true)}
           className="bg-sky-800 hover:bg-indigo-900 shadow-xl font-medium py-2 px-4 rounded-lg transition-colors duration-200 hover:shadow-indigo-500 hover:shadow-lg hover:scale-105 flex items-center gap-2"
         >
-          <svg 
-            className="w-5 h-5" 
-            fill="none" 
-            stroke="currentColor" 
+          <svg
+            className="w-5 h-5"
+            fill="none"
+            stroke="currentColor"
             viewBox="0 0 24 24"
           >
-            <path 
-              strokeLinecap="round" 
-              strokeLinejoin="round" 
-              strokeWidth={2} 
-              d="M12 4v16m8-8H4" 
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M12 4v16m8-8H4"
             />
           </svg>
         </button>
@@ -186,7 +187,7 @@ const FeatureTable = () => {
         setEditingData={setEditingFeature}
         handleUpdateData={handleUpdateFeature}
         handleDeleteData={handleDeleteFeature}
-      />  
+      />
     </div>
   );
 };

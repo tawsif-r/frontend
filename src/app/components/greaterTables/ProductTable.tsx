@@ -18,7 +18,7 @@ const productColumns = (allFeatures: { id: number; name: string }[]): Column<Pro
       updateRow ? (
         <input
           value={value as string}
-          onChange={(e) => updateRow({ ...row, title: e.target.value })}
+          onChange={(e) => updateRow?.({ title: e.target.value })} // Only update title
           className="w-full bg-slate-800 text-white p-1 rounded"
         />
       ) : (
@@ -32,7 +32,7 @@ const productColumns = (allFeatures: { id: number; name: string }[]): Column<Pro
       updateRow ? (
         <input
           value={value as string}
-          onChange={(e) => updateRow({ ...row, image: e.target.value })}
+          onChange={(e) => updateRow?.({ image: e.target.value })} // Only update image
           className="w-full bg-slate-800 text-white p-1 rounded"
         />
       ) : (
@@ -46,7 +46,7 @@ const productColumns = (allFeatures: { id: number; name: string }[]): Column<Pro
       updateRow ? (
         <input
           value={(value as string) || ''}
-          onChange={(e) => updateRow({ ...row, description: e.target.value })}
+          onChange={(e) => updateRow?.({ description: e.target.value })} // Only update description
           className="w-full bg-slate-800 text-white p-1 rounded"
         />
       ) : (
@@ -56,7 +56,7 @@ const productColumns = (allFeatures: { id: number; name: string }[]): Column<Pro
   {
     header: 'Price',
     accessor: 'price',
-    render: (value) => <span>${(value as number)}</span>,
+    render: (value) => <span>${value as number}</span>,
   },
   {
     header: 'Features',
@@ -68,13 +68,13 @@ const productColumns = (allFeatures: { id: number; name: string }[]): Column<Pro
       return updateRow ? (
         <select
           multiple
-          size={5} // Added size to make multiple selections more visible
+          size={5}
           value={featureIds?.map((id) => id.toString()) || []}
           onChange={(e) => {
             const selectedIds = Array.from(e.target.selectedOptions, (option) =>
               parseInt(option.value)
             );
-            updateRow({ ...row, feature_ids: selectedIds });
+            updateRow?.({ feature_ids: selectedIds }); // Only update feature_ids
           }}
           className="w-full bg-slate-800 text-white p-1 rounded"
         >
@@ -160,7 +160,7 @@ const ProductTable = () => {
         price: updatedProduct.price,
         feature_ids: updatedProduct.feature_ids || [],
       };
-      console.log('Update payload',payload)
+      console.log('Update payload', payload);
       const updatedData = await updateData(
         `http://localhost:8000/api/products/${updatedProduct.id}`,
         payload
@@ -225,9 +225,7 @@ const ProductTable = () => {
         onUpdate={handleUpdateProduct}
         onDelete={handleDeleteProduct}
         editingData={editingProduct}
-        setEditingData={(product) => {
-          setEditingProduct(product);
-        }}
+        setEditingData={setEditingProduct}
         handleUpdateData={handleUpdateProduct}
         handleDeleteData={handleDeleteProduct}
       />
