@@ -9,7 +9,7 @@ import { FormField } from '@/app/components/forms/GenForm';
 import Modal from '@/app/components/ui/Modal';
 
 //==================================table==============================
-const productColumns: Column<Product>[] = [
+const productColumns = (allFeatures: { id: number; name: string }[]): Column<Product>[] => [
   { header: 'ID', accessor: 'id' },
   {
     header: 'Title',
@@ -36,7 +36,6 @@ const productColumns: Column<Product>[] = [
           className="w-full bg-slate-800 text-white p-1 rounded"
         />
       ) : (
-        // <img src={value as string} alt="Product" style={{ maxWidth: '50px' }} />
         String(value)
       ),
   },
@@ -46,7 +45,7 @@ const productColumns: Column<Product>[] = [
     render: (value, row, updateRow) =>
       updateRow ? (
         <input
-          value={(value as string) || ''} // Handle null value
+          value={(value as string) || ''}
           onChange={(e) => updateRow({ ...row, description: e.target.value })}
           className="w-full bg-slate-800 text-white p-1 rounded"
         />
@@ -61,38 +60,38 @@ const productColumns: Column<Product>[] = [
   },
   {
     header: 'Features',
-    accessor: 'feature_ids', // Use feature_ids to match the request payload
+    accessor: 'feature_ids',
     render: (value, row, updateRow) => {
-      const features = row.features as { id: number; name: string }[] | undefined; // Display purposes
-      const featureIds = value as number[] | undefined; // Editable field
-  
+      const currentFeatures = row.features as { id: number; name: string }[] | undefined;
+      const featureIds = value as number[] | undefined;
+
       return updateRow ? (
         <select
           multiple
-          value={featureIds?.map((id) => id.toString()) || []} // Convert IDs to strings for <select>
+          size={5} // Added size to make multiple selections more visible
+          value={featureIds?.map((id) => id.toString()) || []}
           onChange={(e) => {
             const selectedIds = Array.from(e.target.selectedOptions, (option) =>
               parseInt(option.value)
             );
-            updateRow({ ...row, feature_ids: selectedIds }); // Update feature_ids with selected values
+            updateRow({ ...row, feature_ids: selectedIds });
           }}
           className="w-full bg-slate-800 text-white p-1 rounded"
         >
-          {features?.map((feature) => (
+          {allFeatures.map((feature) => (
             <option key={feature.id} value={feature.id.toString()}>
               {feature.name}
             </option>
           ))}
         </select>
       ) : (
-        features
-          ? features.map((f) => f.name).join(', ')
+        currentFeatures
+          ? currentFeatures.map((f) => f.name).join(', ')
           : 'No features'
       );
     },
   },
 ];
-//===========================X==============================
 
 const ProductTable = () => {
   const [products, setProducts] = useState<Product[]>([]);
@@ -115,7 +114,6 @@ const ProductTable = () => {
       setError,
       () => {}
     );
-    
   }, []);
 
   const productFields: FormField<Product>[] = [
@@ -124,7 +122,7 @@ const ProductTable = () => {
     { label: 'Description', name: 'description', type: 'text' },
     {
       label: 'Features',
-      name: 'feature_ids', // This will be transformed to feature_ids in handleSubmit
+      name: 'feature_ids',
       type: 'select',
       options: features.map((feature) => ({
         value: feature.id.toString(),
@@ -154,12 +152,19 @@ const ProductTable = () => {
 
   const handleUpdateProduct = async (updatedProduct: Product) => {
     try {
-      console.log("the data is jp")
+      const payload = {
+        id: updatedProduct.id,
+        title: updatedProduct.title,
+        image: updatedProduct.image,
+        description: updatedProduct.description,
+        price: updatedProduct.price,
+        feature_ids: updatedProduct.feature_ids || [],
+      };
+      console.log('Update payload',payload)
       const updatedData = await updateData(
         `http://localhost:8000/api/products/${updatedProduct.id}`,
-        updatedProduct
+        payload
       );
-      console.log(updatedProduct)
       setProducts((prev) =>
         prev.map((p) => (p.id === updatedData.id ? updatedData : p))
       );
@@ -215,13 +220,12 @@ const ProductTable = () => {
       {error && <p style={{ color: 'red' }}>Error: {error}</p>}
       <Table
         data={products}
-        columns={productColumns}
+        columns={productColumns(features)}
         onAdd={handleAddProduct}
         onUpdate={handleUpdateProduct}
         onDelete={handleDeleteProduct}
         editingData={editingProduct}
         setEditingData={(product) => {
-          console.log('Editing product:', product); // Log when editing starts
           setEditingProduct(product);
         }}
         handleUpdateData={handleUpdateProduct}

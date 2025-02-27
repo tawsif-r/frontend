@@ -2,11 +2,10 @@ export interface Product {
     id: number;
     title: string;
     image: string;
-    likes: number;
-    description: string | null;
+    description: string;
     price: number;
-    features: Feature[];
-    feature_ids: number[];
+    features?: { id: number; name: string }[];
+    feature_ids?: number[];
   }
 export type Feature = {
     id: number;
