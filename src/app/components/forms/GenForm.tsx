@@ -21,14 +21,22 @@ const GenForm = <T,>({ api, fields, onSuccess, onError }: FormProps<T>) => {
   const [formData, setFormData] = React.useState<Partial<T>>({});
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
+    const { name, value,type } = e.target;
+
+    if (type === 'checkbox') {
+      setFormData((prev) => ({
+        ...prev,
+        [name]: (e.target as HTMLInputElement).checked
+      }));
+    } else {
+      setFormData((prev) => ({
       ...prev,
       [name]: e.target instanceof HTMLSelectElement && e.target.multiple
         ? Array.from(e.target.selectedOptions).map((option) => option.value)
         : value,
     }));
-  };
+  }
+};
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

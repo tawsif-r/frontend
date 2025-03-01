@@ -61,16 +61,24 @@ const FeatureColumns: Column<Feature>[] = [
     accessor: 'is_active',
     render: (value, row, updateRow) =>
       updateRow ? (
-        <input
-          type="checkbox"
-          checked={value as boolean}
-          onChange={(e) => updateRow({ is_active: e.target.checked })} // Only update is_active
-          className="h-4 w-4 text-cyan-600 bg-gray-700 border-gray-600 rounded focus:ring-cyan-500 focus:ring-2"
-        />
+        <label className="flex items-center cursor-pointer">
+          <input
+            type="checkbox"
+            checked={value as boolean}
+            onChange={(e) => updateRow({ is_active: e.target.checked })}
+            className="h-6 w-6 bg-gradient-to-br from-gray-800 to-gray-900 border-2 border-gray-700 rounded-lg checked:bg-gradient-to-br checked:from-teal-500 checked:to-cyan-600 focus:ring-teal-400 focus:ring-offset-2 focus:ring-offset-gray-900 focus:ring-2 hover:border-teal-600 transition-all duration-200 ease-in-out custom-checkbox"
+          />
+        </label>
       ) : (
-        <span>{value ? 'Yes' : 'No'}</span> // Display text when not editable
+        <span
+          className={`inline-block px-2 py-1 text-xs font-medium rounded-full ${
+            value ? 'bg-teal-500/20 text-teal-300' : 'bg-gray-700 text-gray-400'
+          }`}
+        >
+          {value ? 'Yes' : 'No'}
+        </span>
       ),
-  },
+},
 ];
 
 //===========================Form Fields=======================

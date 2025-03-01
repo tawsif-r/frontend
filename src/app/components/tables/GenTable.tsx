@@ -21,6 +21,7 @@ type TableProps<T> = {
 const Table = <T extends { id: number }>({
   data,
   columns,
+  onAdd,
   onUpdate,
   onDelete,
   editingData,
